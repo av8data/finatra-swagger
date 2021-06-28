@@ -33,9 +33,9 @@ inThisBuild(List(
 showCurrentGitBranch
 git.useGitDescribe := true
 git.baseVersion := "0.0.0"
-val VersionRegex = "([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
+val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
 git.gitTagToVersionNumber := {
-  case VersionRegex(v, "SNAPSHOT") => Some(v)
+  case VersionRegex(v, "SNAPSHOT") => Some(s"$v-SNAPSHOT")
   case VersionRegex(v, "") => Some(v)
   case VersionRegex(v, s) => Some(v)
   case v => None
@@ -59,6 +59,14 @@ lazy val publishSettings = Seq(
   publishArtifact in Compile := true,
   publishArtifact in Test := false,
   autoAPIMappings := true
+)
+
+lazy val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false,
+  // sbt-pgp's publishSigned task needs this defined even though it is not publishing.
+  publishTo := Some(Resolver.file("Unused transient repository", file("target/unusedrepo")))
 )
 
 credentials += Credentials(
@@ -125,6 +133,7 @@ lazy val examples = Project("hello-world-example", file("examples/hello-world"))
     libraryDependencies ++= testLibs,
   ))
   .settings(settings: _*)
+  .settings(noPublishSettings)
   .settings(skip in publish := true)
   .dependsOn(finatraSwagger)
 
