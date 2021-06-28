@@ -1,7 +1,6 @@
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleaseStateTransformations._
-import sbtrelease._
 
 
 val releaseVersion: String = "21.4.5"
@@ -72,7 +71,6 @@ credentials += Credentials(
 
 pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 
-val releaseVersion: String = "21.4.5"
 //releaseVersionBump := sbtrelease.Version.Bump.Next
 //releaseVersion := { ver =>
 //  Version(ver)
