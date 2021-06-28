@@ -4,6 +4,8 @@ import sbtrelease.ReleaseStateTransformations._
 import sbtrelease._
 
 
+val releaseVersion: String = "21.4.5"
+
 inThisBuild(List(
   scalaVersion := "2.13.1",
   crossScalaVersions := Seq("2.12.12", "2.13.1"),
