@@ -16,9 +16,10 @@ import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class DocsController @Inject()(openAPI: OpenAPI,
-                               objectMapper: ScalaObjectMapper,
-                               @Flag("swagger.docs.endpoint") endpoint: String)
+class DocsController @Inject() (
+  openAPI: OpenAPI,
+  objectMapper: ScalaObjectMapper,
+  @Flag("swagger.docs.endpoint") endpoint: String)
     extends Controller {
 
   get("/swagger.json") { _: Request =>
@@ -60,11 +61,11 @@ class DocsController @Inject()(openAPI: OpenAPI,
                   .header("ETag", eTagName)
                   .header(
                     "Expires",
-                    Message.httpDateFormat(new Date(
-                      System.currentTimeMillis() + defaultExpireTimeMillis)))
-                  .header("Last-Modified",
-                          Message.httpDateFormat(
-                            new Date(System.currentTimeMillis())))
+                    Message.httpDateFormat(
+                      new Date(System.currentTimeMillis() + defaultExpireTimeMillis)))
+                  .header(
+                    "Last-Modified",
+                    Message.httpDateFormat(new Date(System.currentTimeMillis())))
                   .header(
                     "Cache-Control",
                     s"max-age=${defaultExpireTimeMillis / 1000}, must-revalidate")
@@ -90,8 +91,7 @@ class DocsController @Inject()(openAPI: OpenAPI,
   private def getETagName(webjarsResourceURI: String): String = {
     val tokens: Array[String] = webjarsResourceURI.split("/")
     if (tokens.length < 7) {
-      throw new IllegalArgumentException(
-        "insufficient URL has given: " + webjarsResourceURI)
+      throw new IllegalArgumentException("insufficient URL has given: " + webjarsResourceURI)
     }
     val version: String = tokens(5)
     val fileName: String = tokens(tokens.length - 1)
@@ -101,7 +101,7 @@ class DocsController @Inject()(openAPI: OpenAPI,
 
   private def checkETagMatch(request: Request, eTagName: String): Boolean = {
     request.headerMap.get("If-None-Match") match {
-      case None        => false
+      case None => false
       case Some(token) => token == eTagName
     }
   }
@@ -113,7 +113,7 @@ class DocsController @Inject()(openAPI: OpenAPI,
       .get("If-Modified-Since")
       .map(dateParser.parseDateTime)
       .map(_.getMillis) match {
-      case None       => false
+      case None => false
       case Some(last) => last - System.currentTimeMillis > 0L
     }
   }

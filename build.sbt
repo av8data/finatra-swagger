@@ -3,32 +3,40 @@ import sbt._
 import sbtrelease.ReleaseStateTransformations._
 import sbtrelease._
 
-
-inThisBuild(List(
-  scalaVersion := "2.13.1",
-  crossScalaVersions := Seq("2.12.12", "2.13.1"),
-  organization := "com.av8data",
-  homepage := Some(url("https://github.com/av8data/finatra-swagger")),
-  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-  developers := List(
-    Developer(
-      "mattav8data",
-      "Matthew Dickinson ",
-      "matt@av8data.com",
-      url("https://av8data.com")
+inThisBuild(
+  List(
+    scalaVersion := "2.13.1",
+    crossScalaVersions := Seq("2.12.12", "2.13.1"),
+    organization := "com.av8data",
+    homepage := Some(url("https://github.com/av8data/finatra-swagger")),
+    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+    developers := List(
+      Developer(
+        "mattav8data",
+        "Matthew Dickinson ",
+        "matt@av8data.com",
+        url("https://av8data.com")
+      ),
+      Developer(
+        id = "jakehschwartz",
+        name = "Jake Schwartz",
+        email = "jakehschwartz@gmail.com",
+        url = url("https://www.jakehschwartz.com")),
+      Developer(
+        id = "xiaodongw",
+        name = "Xiaodong Wang",
+        email = "xiaodongw79@gmail.com",
+        url = url("https://github.com/xiaodongw"))
     ),
-    Developer(id="jakehschwartz", name="Jake Schwartz", email="jakehschwartz@gmail.com", url=url("https://www.jakehschwartz.com")),
-    Developer(id="xiaodongw", name="Xiaodong Wang", email="xiaodongw79@gmail.com", url=url("https://github.com/xiaodongw"))
-  ),
-  scmInfo := Some(
-    ScmInfo(
-      browseUrl = url("https://github.com/av8data/finatra-swagger"),
-      connection = "https://github.com/av8data/finatra-swagger"
-    )
-  ),
-  publishTo := Some(
-    "releases" at "https://oss.sonatype.org/" + "service/local/staging/deploy/maven2"),
-))
+    scmInfo := Some(
+      ScmInfo(
+        browseUrl = url("https://github.com/av8data/finatra-swagger"),
+        connection = "https://github.com/av8data/finatra-swagger"
+      )
+    ),
+    publishTo := Some(
+      "releases" at "https://oss.sonatype.org/" + "service/local/staging/deploy/maven2"),
+  ))
 
 showCurrentGitBranch
 git.useGitDescribe := true
@@ -96,7 +104,6 @@ releaseProcess := Seq(
   pushChanges
 )
 
-
 lazy val sharedSettings = Seq(
   organization := "com.av8data",
   releaseCrossBuild := true,
@@ -128,10 +135,11 @@ lazy val finatraSwagger = project
   .enablePlugins(BuildInfoPlugin)
 
 lazy val examples = Project("hello-world-example", file("examples/hello-world"))
-  .settings(Seq(
-    name := "examples",
-    libraryDependencies ++= testLibs,
-  ))
+  .settings(
+    Seq(
+      name := "examples",
+      libraryDependencies ++= testLibs,
+    ))
   .settings(settings: _*)
   .settings(noPublishSettings)
   .settings(skip in publish := true)
@@ -145,9 +153,9 @@ lazy val settings: Seq[sbt.Def.SettingsDefinition] = Seq(
     "-language:implicitConversions"
   ),
   resolvers ++= Seq(
-    "Local Ivy" at "file:///"+Path.userHome+"/.ivy2/local",
-    "Local Ivy Cache" at "file:///"+Path.userHome+"/.ivy2/cache",
-    "Local Maven Repository" at "file:///"+Path.userHome+"/.m2/repository"
+    "Local Ivy" at "file:///" + Path.userHome + "/.ivy2/local",
+    "Local Ivy Cache" at "file:///" + Path.userHome + "/.ivy2/cache",
+    "Local Maven Repository" at "file:///" + Path.userHome + "/.m2/repository"
   ),
   parallelExecution in Test := true,
   testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"),
@@ -162,7 +170,6 @@ lazy val settings: Seq[sbt.Def.SettingsDefinition] = Seq(
     "-Dlog_level=DEBUG"
   )
 )
-
 
 lazy val twitterReleaseVersion = "21.4.0"
 lazy val jacksonVersion = "2.11.2"

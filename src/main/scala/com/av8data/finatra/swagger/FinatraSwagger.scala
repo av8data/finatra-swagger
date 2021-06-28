@@ -57,10 +57,33 @@ sealed trait ModelParam {
 }
 
 sealed trait FinatraRequestParam
-case class RouteRequestParam(name: String, typ: Class[_], description: String = "", required: Boolean = true) extends FinatraRequestParam with ModelParam
-case class QueryRequestParam(name: String, typ: Class[_], description: String = "", required: Boolean = true) extends FinatraRequestParam with ModelParam
-case class HeaderRequestParam(name: String, required: Boolean = true, description: String = "", typ: Class[_]) extends FinatraRequestParam with ModelParam
-case class BodyRequestParam(description: String = "", name: String, typ: Class[_], innerOptionType: Option[java.lang.reflect.Type] = None) extends FinatraRequestParam
+case class RouteRequestParam(
+  name: String,
+  typ: Class[_],
+  description: String = "",
+  required: Boolean = true)
+    extends FinatraRequestParam
+    with ModelParam
+case class QueryRequestParam(
+  name: String,
+  typ: Class[_],
+  description: String = "",
+  required: Boolean = true)
+    extends FinatraRequestParam
+    with ModelParam
+case class HeaderRequestParam(
+  name: String,
+  required: Boolean = true,
+  description: String = "",
+  typ: Class[_])
+    extends FinatraRequestParam
+    with ModelParam
+case class BodyRequestParam(
+  description: String = "",
+  name: String,
+  typ: Class[_],
+  innerOptionType: Option[java.lang.reflect.Type] = None)
+    extends FinatraRequestParam
 case class RequestInjectRequestParam(name: String) extends FinatraRequestParam
 
 class FinatraSwagger(val openAPI: OpenAPI) {
@@ -75,28 +98,23 @@ class FinatraSwagger(val openAPI: OpenAPI) {
     val properties = getFinatraProps[T]
 
     val swaggerFinatraProps =
-      properties.collect {
-        case x: ModelParam => x
-      }.map {
-        case param @ (_: RouteRequestParam) =>
-          new PathParameter().
-            name(param.name).
-            description(param.description).
-            required(param.required).
-            schema(registerModel(param.typ))
-        case param @ (_: QueryRequestParam) =>
-          new QueryParameter().
-            name(param.name).
-            description(param.description).
-            required(param.required).
-            schema(registerModel(param.typ))
-        case param @ (_: HeaderRequestParam) =>
-          new HeaderParameter().
-            name(param.name).
-            description(param.description).
-            required(param.required).
-            schema(registerModel(param.typ))
-      }
+      properties
+        .collect { case x: ModelParam =>
+          x
+        }.map {
+          case param @ (_: RouteRequestParam) =>
+            new PathParameter()
+              .name(param.name).description(param.description).required(param.required).schema(
+                registerModel(param.typ))
+          case param @ (_: QueryRequestParam) =>
+            new QueryParameter()
+              .name(param.name).description(param.description).required(param.required).schema(
+                registerModel(param.typ))
+          case param @ (_: HeaderRequestParam) =>
+            new HeaderParameter()
+              .name(param.name).description(param.description).required(param.required).schema(
+                registerModel(param.typ))
+        }
 
     swaggerFinatraProps ++ List(getSwaggerBodyProp[T])
   }
@@ -109,14 +127,12 @@ class FinatraSwagger(val openAPI: OpenAPI) {
       .getDeclaredFields
       .asScala
       .toList
-    val annotations = clazz
-      .getConstructors
-      .head
-      .getParameters
+    val annotations = clazz.getConstructors.head.getParameters
       .map(parameter => parameter.getAnnotations)
       .toList
 
-    val bodyFieldsWithAnnotations = fields.zip(annotations)
+    val bodyFieldsWithAnnotations = fields
+      .zip(annotations)
       .filter { fieldWithAnnotations =>
         val (_, annotations) = fieldWithAnnotations
         val doesNotContainFinatraAnnotations = FinatraSwagger.finatraAnnotations
@@ -130,11 +146,12 @@ class FinatraSwagger(val openAPI: OpenAPI) {
       .subclass(classOf[Object])
       .name("swagger." + clazz.getCanonicalName)
 
-    val populatedType = bodyFieldsWithAnnotations.foldLeft(dynamicType) { (asm, fieldWithAnnotations) =>
-      val (field, annotations) = fieldWithAnnotations
-      asm
-        .defineField(field.getName, field.getType, Visibility.PUBLIC)
-        .annotateField(annotations.toList.asJava)
+    val populatedType = bodyFieldsWithAnnotations.foldLeft(dynamicType) {
+      (asm, fieldWithAnnotations) =>
+        val (field, annotations) = fieldWithAnnotations
+        asm
+          .defineField(field.getName, field.getType, Visibility.PUBLIC)
+          .annotateField(annotations.toList.asJava)
     }
 
     val bodyProperty = registerModel(populatedType.make.load(getClass.getClassLoader).getLoaded)
@@ -156,19 +173,17 @@ class FinatraSwagger(val openAPI: OpenAPI) {
     val fields = clazz.getDeclaredFields
 
     val constructorArgWithField =
-      clazz.
-        getConstructors.
-        head.getParameters.
-        map(m => (clazz: Class[_ <: Annotation]) => {
-          val annotation = m.getAnnotationsByType(clazz)
+      clazz.getConstructors.head.getParameters
+        .map(m =>
+          (clazz: Class[_ <: Annotation]) => {
+            val annotation = m.getAnnotationsByType(clazz)
 
-          if (annotation.isEmpty) {
-            None
-          } else {
-            Some(annotation)
-          }
-        }).
-        zip(fields)
+            if (annotation.isEmpty) {
+              None
+            } else {
+              Some(annotation)
+            }
+          }).zip(fields)
 
     val ast: List[Option[FinatraRequestParam]] =
       constructorArgWithField.map { case (annotationExtractor, field) =>
@@ -180,7 +195,6 @@ class FinatraSwagger(val openAPI: OpenAPI) {
 
         val (isRequired, innerOptionType) = field.getGenericType match {
           case parameterizedType: ParameterizedType =>
-
             val required = parameterizedType.getRawType.asInstanceOf[Class[_]] == classOf[Option[_]]
 
             (required, Some(parameterizedType.getActualTypeArguments.apply(0)))
@@ -190,18 +204,19 @@ class FinatraSwagger(val openAPI: OpenAPI) {
 
         if (routeParam.isDefined) {
           Some(RouteRequestParam(field.getName, typ = field.getType))
-        }
-        else if (queryParam.isDefined) {
+        } else if (queryParam.isDefined) {
           Some(QueryRequestParam(field.getName, typ = field.getType, required = isRequired))
-        }
-        else if ((injectJavax.isDefined || injectGuice.isDefined) && field.getType.isAssignableFrom(classOf[Request])) {
+        } else if ((injectJavax.isDefined || injectGuice.isDefined) && field.getType
+            .isAssignableFrom(classOf[Request])) {
           Some(RequestInjectRequestParam(field.getName))
-        }
-        else if (header.isDefined) {
+        } else if (header.isDefined) {
           Some(HeaderRequestParam(field.getName, typ = field.getType, required = isRequired))
-        }
-        else {
-          Some(BodyRequestParam(name = field.getName, typ = field.getType, innerOptionType = innerOptionType))
+        } else {
+          Some(
+            BodyRequestParam(
+              name = field.getName,
+              typ = field.getType,
+              innerOptionType = innerOptionType))
         }
       }.toList
 
