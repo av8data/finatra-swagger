@@ -6,8 +6,7 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 
 class DocsControllerTest extends SampleAppBaseTest {
 
-  override lazy val server: EmbeddedHttpServer = makeServer(
-    serverName = "docsControllerServer")
+  override lazy val server: EmbeddedHttpServer = makeServer(serverName = "docsControllerServer")
 
   private val swaggerUrl: String =
     s"/docs/swagger-ui/${BuildInfo.swaggerUIVersion}/index.html?url=/swagger.json"
