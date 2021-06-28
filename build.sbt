@@ -1,9 +1,8 @@
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleaseStateTransformations._
+import sbtrelease._
 
-
-val releaseVersion: String = "21.4.5"
 
 inThisBuild(List(
   scalaVersion := "2.13.1",
@@ -36,7 +35,7 @@ git.useGitDescribe := true
 git.baseVersion := "0.0.0"
 val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
 git.gitTagToVersionNumber := {
-  case VersionRegex(v, "SNAPSHOT") => Some(s"$v-SNAPSHOT")
+  case VersionRegex(v, "SNAPSHOT") => Some(v)
   case VersionRegex(v, "") => Some(v)
   case VersionRegex(v, s) => Some(v)
   case v => None
@@ -71,12 +70,12 @@ credentials += Credentials(
 
 pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 
-//releaseVersionBump := sbtrelease.Version.Bump.Next
-//releaseVersion := { ver =>
-//  Version(ver)
-//    .map(_.bump(releaseVersionBump.value).string)
-//    .getOrElse(versionFormatError(ver))
-//}
+releaseVersionBump := sbtrelease.Version.Bump.Next
+releaseVersion := { ver =>
+  Version(ver)
+    .map(_.bump(releaseVersionBump.value).string)
+    .getOrElse(versionFormatError(ver))
+}
 
 releaseProcess := Seq(
   checkSnapshotDependencies,
