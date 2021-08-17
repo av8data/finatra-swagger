@@ -4,10 +4,9 @@ import com.twitter.conversions.DurationOps._
 import com.twitter.finagle.http.{Response, Status}
 import com.twitter.finatra.http.EmbeddedHttpServer
 
-class DocsControllerTest extends FeatureTestBase {
+class DocsControllerTest extends SampleAppBaseTest {
 
-  override lazy val server: EmbeddedHttpServer = makeServer(
-    serverName = "docsControllerServer")
+  override lazy val server: EmbeddedHttpServer = makeServer(serverName = "docsControllerServer")
 
   private val swaggerUrl: String =
     s"/docs/swagger-ui/${BuildInfo.swaggerUIVersion}/index.html?url=/swagger.json"

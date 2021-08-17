@@ -16,8 +16,12 @@ object FinatraOperation {
 class FinatraOperation(operation: Operation) {
   import FinatraSwagger._
 
-  def pathParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-                           (implicit openAPI: OpenAPI): Operation = {
+  def pathParam[T: TypeTag](
+    name: String,
+    description: String = "",
+    required: Boolean = true
+  )(
+    implicit openAPI: OpenAPI): Operation = {
     val param = new PathParameter()
       .name(name)
       .description(description)
@@ -27,14 +31,18 @@ class FinatraOperation(operation: Operation) {
     operation.addParametersItem(param)
   }
 
-  def request[T <: Product : TypeTag](implicit openAPI: OpenAPI): Operation = {
+  def request[T <: Product: TypeTag](implicit openAPI: OpenAPI): Operation = {
     operation.setParameters(openAPI.register[T].asJava)
 
     operation
   }
 
-  def queryParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-                            (implicit openAPI: OpenAPI): Operation = {
+  def queryParam[T: TypeTag](
+    name: String,
+    description: String = "",
+    required: Boolean = true
+  )(
+    implicit openAPI: OpenAPI): Operation = {
     val param = new QueryParameter()
       .name(name)
       .description(description)
@@ -44,8 +52,12 @@ class FinatraOperation(operation: Operation) {
     operation.addParametersItem(param)
   }
 
-  def headerParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-                             (implicit openAPI: OpenAPI): Operation = {
+  def headerParam[T: TypeTag](
+    name: String,
+    description: String = "",
+    required: Boolean = true
+  )(
+    implicit openAPI: OpenAPI): Operation = {
     val param = new HeaderParameter()
       .name(name)
       .description(description)
@@ -55,8 +67,12 @@ class FinatraOperation(operation: Operation) {
     operation.addParametersItem(param)
   }
 
-  def cookieParam[T: TypeTag](name: String, description: String = "", required: Boolean = true)
-                             (implicit openAPI: OpenAPI): Operation = {
+  def cookieParam[T: TypeTag](
+    name: String,
+    description: String = "",
+    required: Boolean = true
+  )(
+    implicit openAPI: OpenAPI): Operation = {
     val param = new CookieParameter()
       .name(name)
       .description(description)
@@ -67,8 +83,11 @@ class FinatraOperation(operation: Operation) {
     operation
   }
 
-  def bodyParam[T: TypeTag](description: String = "", example: Option[T] = None)
-                           (implicit openAPI: OpenAPI): Operation = {
+  def bodyParam[T: TypeTag](
+    description: String = "",
+    example: Option[T] = None
+  )(
+    implicit openAPI: OpenAPI): Operation = {
     val model = openAPI.registerModel[T]
 
     val content = new Content
@@ -85,11 +104,13 @@ class FinatraOperation(operation: Operation) {
     operation
   }
 
-  def responseWith[T: TypeTag](status: Int,
-                               description: String = "",
-                               contentType: String = "",
-                               example: Option[T] = None)
-                              (implicit openAPI: OpenAPI): Operation = {
+  def responseWith[T: TypeTag](
+    status: Int,
+    description: String = "",
+    contentType: String = "",
+    example: Option[T] = None
+  )(
+    implicit openAPI: OpenAPI): Operation = {
     val ref = openAPI.registerModel[T]
 
 //    //todo not working, sample is not in the generated api, waiting for swagger fix

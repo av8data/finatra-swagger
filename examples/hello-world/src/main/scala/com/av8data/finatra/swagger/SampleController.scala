@@ -14,7 +14,7 @@ class SampleFilter extends SimpleFilter[Request, Response] {
   }
 }
 
-class SampleController @Inject()(implicit val openAPI: OpenAPI) extends SwaggerController {
+class SampleController @Inject() (implicit val openAPI: OpenAPI) extends SwaggerController {
 
   case class HelloResponse(text: String, time: Date)
 
@@ -23,13 +23,32 @@ class SampleController @Inject()(implicit val openAPI: OpenAPI) extends SwaggerC
       .description("Read the detail information about the student.")
       .addTagsItem("Student")
       .pathParam[String]("id", "the student id")
-      .responseWith[Student](200, "the student object", "application/json",
-      example = Some(Student("Tom", "Wang", Gender.Male, new LocalDate(), 4, Some(Address("California Street", "94111")))))
+      .responseWith[Student](
+        200,
+        "the student object",
+        "application/json",
+        example = Some(
+          Student(
+            "Tom",
+            "Wang",
+            Gender.Male,
+            new LocalDate(),
+            4,
+            Some(Address("California Street", "94111"))))
+      )
       .responseWith(404, "the student is not found")
   } { request: Request =>
     val id = request.getParam("id")
 
-    response.ok.json(Student("Alice", "Wang", Gender.Female, new LocalDate(), 4, Some(Address("California Street", "94111")))).toFuture
+    response.ok
+      .json(
+        Student(
+          "Alice",
+          "Wang",
+          Gender.Female,
+          new LocalDate(),
+          4,
+          Some(Address("California Street", "94111")))).toFuture
   }
 
   postWithDoc("/students/:id") { o =>
@@ -40,7 +59,15 @@ class SampleController @Inject()(implicit val openAPI: OpenAPI) extends SwaggerC
   } { request: StudentWithRoute =>
     val id = request.id
 
-    response.ok.json(Student("Alice", "Wang", Gender.Female, new LocalDate(), 4, Some(Address("California Street", "94111")))).toFuture
+    response.ok
+      .json(
+        Student(
+          "Alice",
+          "Wang",
+          Gender.Female,
+          new LocalDate(),
+          4,
+          Some(Address("California Street", "94111")))).toFuture
   }
 
   postWithDoc("/students/test/:id", registerOptionsRequest = true) { o =>
@@ -51,7 +78,15 @@ class SampleController @Inject()(implicit val openAPI: OpenAPI) extends SwaggerC
   } { request: StudentWithRoute =>
     val id = request.id
 
-    response.ok.json(Student("Alice", "Wang", Gender.Female, new LocalDate(), 4, Some(Address("California Street", "94111")))).toFuture
+    response.ok
+      .json(
+        Student(
+          "Alice",
+          "Wang",
+          Gender.Female,
+          new LocalDate(),
+          4,
+          Some(Address("California Street", "94111")))).toFuture
   }
 
   postWithDoc("/students/firstName", registerOptionsRequest = true) {
@@ -123,10 +158,20 @@ class SampleController @Inject()(implicit val openAPI: OpenAPI) extends SwaggerC
       .responseWith[Course](200, "the courses detail")
       .responseWith(500, "internal error")
   } { request: Request =>
-    response.ok.json(Course(new DateTime(), "calculation", Seq("math"), CourseType.LAB, 20, BigDecimal(300.54))).toFuture
+    response.ok
+      .json(
+        Course(
+          new DateTime(),
+          "calculation",
+          Seq("math"),
+          CourseType.LAB,
+          20,
+          BigDecimal(300.54))).toFuture
   }
 
-  filter[SampleFilter].getWithDoc("/courses/:courseId/student/:studentId", registerOptionsRequest = true) { o =>
+  filter[SampleFilter].getWithDoc(
+    "/courses/:courseId/student/:studentId",
+    registerOptionsRequest = true) { o =>
     o.summary("Is the student in this course")
       .tags(List("Course", "Student"))
       .pathParam[String]("courseId", "the course id")
@@ -137,6 +182,5 @@ class SampleController @Inject()(implicit val openAPI: OpenAPI) extends SwaggerC
   } { request: Request =>
     response.ok.json(true).toFuture
   }
-
 
 }
