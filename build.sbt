@@ -124,7 +124,7 @@ lazy val finatraSwagger = project
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http-server" % twitterReleaseVersion,
       "io.swagger.core.v3" % "swagger-project" % "2.1.10",
-      "com.github.swagger-akka-http" %% "swagger-scala-module" % "2.3.1",
+      "com.github.swagger-akka-http" %% "swagger-scala-module" % "2.3.3",
       "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % jacksonVersion,
       "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
       "org.webjars" % "swagger-ui" % swaggerUIVersion.value,
