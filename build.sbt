@@ -42,7 +42,7 @@ inThisBuild(
 
 showCurrentGitBranch
 git.useGitDescribe := true
-git.baseVersion := "0.0.0"
+git.baseVersion := "v0.0.0"
 val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
 git.gitTagToVersionNumber := {
   case VersionRegex(v, "SNAPSHOT") => Some(s"$v-SNAPSHOT")
