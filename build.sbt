@@ -34,6 +34,7 @@ inThisBuild(
         connection = "https://github.com/av8data/finatra-swagger"
       )
     ),
+    sonatypeSessionName := s"[sbt-sonatype] finatra-swagger",
     publishTo := Some(
       "releases" at "https://oss.sonatype.org/" + "service/local/staging/deploy/maven2"),
   ))
@@ -101,7 +102,8 @@ releaseProcess := Seq(
   runTest,
   tagRelease,
   publishArtifacts,
-  releaseStepCommand("sonatypeRelease"),
+  releaseStepCommandAndRemaining("+publishSigned"),
+  releaseStepCommand("sonatypeBundleRelease"),
   pushChanges
 )
 
