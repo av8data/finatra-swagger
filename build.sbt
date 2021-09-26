@@ -38,8 +38,6 @@ inThisBuild(
       "releases" at "https://oss.sonatype.org/" + "service/local/staging/deploy/maven2"),
   ))
 
-version in ThisBuild := "v0.0.2"
-
 showCurrentGitBranch
 git.useGitDescribe := true
 git.baseVersion := "0.0.0"
