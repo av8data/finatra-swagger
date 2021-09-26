@@ -88,12 +88,12 @@ credentials += Credentials(
 
 pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 
-releaseVersionBump := sbtrelease.Version.Bump.Next
-releaseVersion := { ver =>
-  Version(ver)
-    .map(_.bump(releaseVersionBump.value).string)
-    .getOrElse(versionFormatError(ver))
-}
+//releaseVersionBump := sbtrelease.Version.Bump.Next
+//releaseVersion := { ver =>
+//  Version(ver)
+//    .map(_.bump(releaseVersionBump.value).string)
+//    .getOrElse(versionFormatError(ver))
+//}
 
 releaseProcess := Seq(
   checkSnapshotDependencies,
