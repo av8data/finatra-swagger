@@ -51,7 +51,6 @@ git.gitTagToVersionNumber := {
   case v => None
 }
 
-println(s"tagtoversion ${git.gitTagToVersionNumber}")
 
 (sys.env.get("SONATYPE_USERNAME"), sys.env.get("SONATYPE_PASSWORD")) match {
   case (Some(username), Some(password)) =>
@@ -91,11 +90,14 @@ credentials += Credentials(
 pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 
 releaseVersionBump := sbtrelease.Version.Bump.Next
-releaseVersion := { ver =>
+releaseVersion := { ver: String =>
   println(s"got ver $ver")
-  Version(ver)
-    .map(_.bump(releaseVersionBump.value).string)
+  val foo = Version(ver)
+    .map(_.withoutQualifier.string)
+//    .map(_.bump(releaseVersionBump.value).string)
     .getOrElse(versionFormatError(ver))
+  println(s"got foo $foo")
+  foo
 }
 
 releaseProcess := Seq(
