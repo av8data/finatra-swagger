@@ -45,10 +45,15 @@ git.useGitDescribe := true
 git.baseVersion := "0.0.0"
 val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)-?(.*)?".r
 git.gitTagToVersionNumber := {
-  case VersionRegex(v, sha, "SNAPSHOT") => Some(v)
-  case VersionRegex(v, "") => Some(v)
-  case VersionRegex(v, s) => Some(v)
-  case v => None
+  case VersionRegex(v, sha, "SNAPSHOT") => println("got this1")
+    Some(v)
+  case VersionRegex(v, "") => println("got this2")
+    Some(v)
+  case VersionRegex(v, s) =>
+    println("got this3")
+    Some(v)
+  case v => println("got this4")
+    None
 }
 
 (sys.env.get("SONATYPE_USERNAME"), sys.env.get("SONATYPE_PASSWORD")) match {
@@ -90,6 +95,7 @@ pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 
 releaseVersionBump := sbtrelease.Version.Bump.Next
 releaseVersion := { ver =>
+  println(s"got ver $ver")
   Version(ver)
     .map(_.bump(releaseVersionBump.value).string)
     .getOrElse(versionFormatError(ver))
