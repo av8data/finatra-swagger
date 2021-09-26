@@ -43,9 +43,9 @@ inThisBuild(
 showCurrentGitBranch
 git.useGitDescribe := true
 git.baseVersion := "0.0.0"
-val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)".r
+val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
 git.gitTagToVersionNumber := {
-  case VersionRegex(v, "SNAPSHOT") => Some(v)
+  case VersionRegex(v, "SNAPSHOT") => Some(s"$v-SNAPSHOT")
   case VersionRegex(v, "") => Some(v)
   case VersionRegex(v, s) => Some(v)
   case v => None
@@ -93,8 +93,8 @@ releaseVersionBump := sbtrelease.Version.Bump.Next
 releaseVersion := { ver: String =>
   println(s"got ver $ver")
   val foo = Version(ver)
-    .map(_.withoutQualifier.string)
-//    .map(_.bump(releaseVersionBump.value).string)
+//    .map(_.withoutQualifier.string)
+    .map(_.bump(releaseVersionBump.value).string)
     .getOrElse(versionFormatError(ver))
   println(s"got foo $foo")
   foo
