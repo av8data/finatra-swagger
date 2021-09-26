@@ -92,7 +92,9 @@ pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 releaseVersionBump := sbtrelease.Version.Bump.Next
 releaseVersion := { ver: String =>
   println(s"got ver $ver")
-  val foo = Version(ver)
+  val bar = ver.replace("-SNAPSHOT", "")
+  println(s"bar is $bar")
+  val foo = Version(bar)
 //    .map(_.withoutQualifier.string)
     .map(_.bump(releaseVersionBump.value).string)
     .getOrElse(versionFormatError(ver))
