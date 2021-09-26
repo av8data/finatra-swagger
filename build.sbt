@@ -51,6 +51,7 @@ git.gitTagToVersionNumber := {
     Some(v)
   case VersionRegex(v, s) =>
     println("got this3")
+    println(s"got version tag $v")
     Some(v)
   case v => println("got this4")
     None
