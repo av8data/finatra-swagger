@@ -45,17 +45,13 @@ git.useGitDescribe := true
 git.baseVersion := "0.0.0"
 val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)".r
 git.gitTagToVersionNumber := {
-  case VersionRegex(v, "SNAPSHOT") => println("got this1")
-    Some(v)
-  case VersionRegex(v, "") => println("got this2")
-    Some(v)
-  case VersionRegex(v, s) =>
-    println("got this3")
-    println(s"got version tag $v")
-    Some(v)
-  case v => println("got this4")
-    None
+  case VersionRegex(v, "SNAPSHOT") => Some(v)
+  case VersionRegex(v, "") => Some(v)
+  case VersionRegex(v, s) => Some(v)
+  case v => None
 }
+
+println(s"tagtoversion ${git.gitTagToVersionNumber}")
 
 (sys.env.get("SONATYPE_USERNAME"), sys.env.get("SONATYPE_PASSWORD")) match {
   case (Some(username), Some(password)) =>
