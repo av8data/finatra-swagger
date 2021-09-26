@@ -43,9 +43,9 @@ inThisBuild(
 showCurrentGitBranch
 git.useGitDescribe := true
 git.baseVersion := "0.0.0"
-val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)-?(.*)?".r
+val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)".r
 git.gitTagToVersionNumber := {
-  case VersionRegex(v, sha, "SNAPSHOT") => println("got this1")
+  case VersionRegex(v, "SNAPSHOT") => println("got this1")
     Some(v)
   case VersionRegex(v, "") => println("got this2")
     Some(v)
