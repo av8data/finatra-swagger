@@ -128,7 +128,7 @@ lazy val finatraSwagger = project
   .settings(publishSettings)
   .settings(Seq(
     name := "finatra-swagger",
-    swaggerUIVersion := "3.52.1",
+    swaggerUIVersion := "3.52.3",
     buildInfoPackage := "com.av8data.finatra.swagger",
     buildInfoKeys := Seq[BuildInfoKey](name, version, swaggerUIVersion),
     libraryDependencies ++= Seq(
@@ -181,8 +181,8 @@ lazy val settings: Seq[sbt.Def.SettingsDefinition] = Seq(
   )
 )
 
-lazy val twitterReleaseVersion = "21.8.0"
-lazy val jacksonVersion = "2.13.0"
+lazy val twitterReleaseVersion = "21.9.0"
+lazy val jacksonVersion = "2.11.4"
 val testLibs = Seq(
   "com.twitter" %% "finatra-http-server" % twitterReleaseVersion % "test" classifier "tests",
   "com.twitter" %% "inject-app" % twitterReleaseVersion % "test" classifier "tests",
