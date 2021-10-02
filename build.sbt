@@ -34,9 +34,11 @@ inThisBuild(
         connection = "https://github.com/av8data/finatra-swagger"
       )
     ),
+    sonatypeSessionName := s"[sbt-sonatype] finatra-swagger",
     publishTo := Some(
       "releases" at "https://oss.sonatype.org/" + "service/local/staging/deploy/maven2"),
   ))
+
 
 showCurrentGitBranch
 git.useGitDescribe := true
@@ -48,6 +50,7 @@ git.gitTagToVersionNumber := {
   case VersionRegex(v, s) => Some(v)
   case v => None
 }
+
 
 (sys.env.get("SONATYPE_USERNAME"), sys.env.get("SONATYPE_PASSWORD")) match {
   case (Some(username), Some(password)) =>
@@ -87,10 +90,16 @@ credentials += Credentials(
 pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray())
 
 releaseVersionBump := sbtrelease.Version.Bump.Next
-releaseVersion := { ver =>
-  Version(ver)
+releaseVersion := { ver: String =>
+  println(s"got ver $ver")
+  val bar = ver.replace("-SNAPSHOT", "")
+  println(s"bar is $bar")
+  val foo = Version(bar)
+//    .map(_.withoutQualifier.string)
     .map(_.bump(releaseVersionBump.value).string)
     .getOrElse(versionFormatError(ver))
+  println(s"got foo $foo")
+  foo
 }
 
 releaseProcess := Seq(
@@ -100,7 +109,8 @@ releaseProcess := Seq(
   runTest,
   tagRelease,
   publishArtifacts,
-  releaseStepCommand("sonatypeRelease"),
+  releaseStepCommandAndRemaining("+publishSigned"),
+  releaseStepCommand("sonatypeBundleRelease"),
   pushChanges
 )
 
@@ -118,17 +128,17 @@ lazy val finatraSwagger = project
   .settings(publishSettings)
   .settings(Seq(
     name := "finatra-swagger",
-    swaggerUIVersion := "3.52.1",
+    swaggerUIVersion := "3.52.3",
     buildInfoPackage := "com.av8data.finatra.swagger",
     buildInfoKeys := Seq[BuildInfoKey](name, version, swaggerUIVersion),
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http-server" % twitterReleaseVersion,
-      "io.swagger.core.v3" % "swagger-project" % "2.1.10",
-      "com.github.swagger-akka-http" %% "swagger-scala-module" % "2.3.4",
+      "io.swagger.core.v3" % "swagger-project" % "2.1.11",
+      "com.github.swagger-akka-http" %% "swagger-scala-module" % "2.3.3",
       "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % jacksonVersion,
       "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
       "org.webjars" % "swagger-ui" % swaggerUIVersion.value,
-      "net.bytebuddy" % "byte-buddy" % "1.11.15"
+      "net.bytebuddy" % "byte-buddy" % "1.11.18"
     ) ++ testLibs
   ))
   .settings(settings: _*)
@@ -171,7 +181,7 @@ lazy val settings: Seq[sbt.Def.SettingsDefinition] = Seq(
   )
 )
 
-lazy val twitterReleaseVersion = "21.8.0"
+lazy val twitterReleaseVersion = "21.9.0"
 lazy val jacksonVersion = "2.11.4"
 val testLibs = Seq(
   "com.twitter" %% "finatra-http-server" % twitterReleaseVersion % "test" classifier "tests",
