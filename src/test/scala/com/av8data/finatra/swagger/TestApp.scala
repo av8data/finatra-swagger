@@ -12,7 +12,7 @@ class SampleApp extends HttpServer {
   override val name: String = "TestApp"
   override protected def modules: Seq[Module] = Seq(TestSwaggerModule)
 
-  override def configureHttp(router: HttpRouter) {
+  override def configureHttp(router: HttpRouter): Unit = {
     router
       .filter[CommonFilters]
       .add[DocsController]
