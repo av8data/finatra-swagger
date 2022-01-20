@@ -191,7 +191,7 @@ val testLibs = Seq(
   "com.twitter" %% "inject-server" % twitterReleaseVersion % "test" classifier "tests",
   "ch.qos.logback" % "logback-classic" % "1.2.10",
   "org.scalatest" %% "scalatest" % "3.2.9" % "test",
-  "org.mockito" %% "mockito-scala" % "1.16.46" % "test"
+  "org.mockito" %% "mockito-scala" % "1.16.55" % "test"
 )
 
 val exampleLibs = Seq(
