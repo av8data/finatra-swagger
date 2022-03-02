@@ -181,7 +181,7 @@ lazy val settings: Seq[sbt.Def.SettingsDefinition] = Seq(
   )
 )
 
-lazy val twitterReleaseVersion = "22.1.0"
+lazy val twitterReleaseVersion = "22.2.0"
 lazy val jacksonVersion = "2.13.1"
 val testLibs = Seq(
   "com.twitter" %% "finatra-http-server" % twitterReleaseVersion % "test" classifier "tests",
