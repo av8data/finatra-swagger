@@ -5,8 +5,8 @@ import sbtrelease._
 
 inThisBuild(
   List(
-    scalaVersion := "2.13.1",
-    crossScalaVersions := Seq("2.12.12", "2.13.1"),
+    scalaVersion := "2.13.10",
+    crossScalaVersions := Seq("2.12.12", "2.13.10"),
     organization := "com.av8data",
     homepage := Some(url("https://github.com/av8data/finatra-swagger")),
     licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
